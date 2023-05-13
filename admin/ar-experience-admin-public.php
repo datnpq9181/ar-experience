@@ -1,11 +1,12 @@
 <?php
 
 // Include pages
-include (plugin_dir_path(__FILE__) . '/pages/model-manager/ar-experience-admin-model-manager.php');
-include (plugin_dir_path(__FILE__) . '/pages/license/ar-experience-admin-license.php');
+include(plugin_dir_path(__FILE__) . '/pages/model-manager/ar-experience-admin-model-manager.php');
+include(plugin_dir_path(__FILE__) . '/pages/license/ar-experience-admin-license.php');
 
 // Add the AR Product View menu item and its sub-menus
-function add_ar_product_view_menu() {
+function add_ar_product_view_menu()
+{
     // Add the main menu item
     add_menu_page(
         'AR Experience',
@@ -34,6 +35,7 @@ function add_ar_product_view_menu() {
         'license_page'
     );
 }
+
 add_action('admin_menu', 'add_ar_product_view_menu');
 
 // Callback function for the AR Product View page
