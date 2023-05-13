@@ -12,6 +12,9 @@ function ar_product_meta_box_callback( $post ) {
     <div class="options_group">
         <p>
             <a href="#" class="add_ar_model_path_button button"><?php esc_html_e( 'Select AR Model', 'woocommerce' ); ?></a>
+            <?php if ( $ar_model_path ) : ?>
+                <a href="#" class="remove_ar_model_path_button button"><?php esc_html_e( 'Remove Model', 'woocommerce' ); ?></a>
+            <?php endif; ?>
         </p>
         <div class="selected_ar_model_path" <?php echo $ar_model_path ? '' : 'style="display:none;"'; ?>>
             <?php 
@@ -38,13 +41,16 @@ function ar_product_meta_box_callback( $post ) {
                 }
 
                 // Create the media uploader frame.
-                file_frame = wp.media.frames.file_frame = wp.media({
-                    title: '<?php esc_html_e( 'Select or Upload AR Model', 'woocommerce' ); ?>',
-                    button: {
-                        text: '<?php esc_html_e( 'Use this file', 'woocommerce' ); ?>'
-                    },
-                    multiple: false
-                });
+file_frame = wp.media.frames.file_frame = wp.media({
+    title: '<?php esc_html_e( 'Select or Upload AR Model', 'woocommerce' ); ?>',
+    button: {
+        text: '<?php esc_html_e( 'Use this file', 'woocommerce' ); ?>'
+    },
+    multiple: false,
+    library: {
+        type: ['model/gltf-binary', 'model/vnd.usdz+zip']
+    }
+});
 
                 // Run the callback function when an AR model is selected.
                 file_frame.on('select', function() {
@@ -58,42 +64,75 @@ function ar_product_meta_box_callback( $post ) {
                     $('#_ar_model_path').val(attachment.url);
 
                     // Get the selected AR model path.
-var ar_model_path = attachment.url;
+                    var ar_model_path = attachment.url;
 
-// Update the hidden input field with the new AR model path.
-$('#_ar_model_path').val(ar_model_path);
+                    // Update the hidden input field with the new AR model path.
+                    $('#_ar_model_path').val(ar_model_path);
 
-// Update the existing AR model path variable.
-$ar_model_path = ar_model_path;
+                    // Update the existing AR model path variable.
+                    $ar_model_path = ar_model_path;
 
-// Update the displayed filename.
-$('.selected_ar_model_path').text(attachment.filename).show();
+                    // Update the displayed filename.
+                    $('.selected_ar_model_path').text(attachment.filename).show();
 
 // Save the new AR model path as post meta.
 $.ajax({
-    url: ajaxurl,
-    type: 'POST',
-    data: {
-        action: 'save_ar_model_path',
-        post_id: <?php echo $post->ID; ?>,
-        ar_model_path: ar_model_path
-    },
-    success: function(response) {
-        console.log(response);
-    },
-    error: function(error) {
-        console.log(error);
-    }
-});
+                        url: ajaxurl,
+                        type: 'POST',
+                        data: {
+                            action: 'save_ar_model_path',
+                            post_id: <?php echo $post->ID; ?>,
+                            ar_model_path: ar_model_path
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(error) {
+                            console.log(error);
+                        }
+                    });
+
+                    // Show the remove button.
+                    $('.remove_ar_model_path_button').show();
                 });
 
                 // Open the media uploader frame.
                 file_frame.open();
             });
+
+// Run the remove AR model function when the remove_ar_model_path_button button is clicked.
+$('.remove_ar_model_path_button').on('click', function(event) {
+            event.preventDefault();
+
+            // Clear the AR model path input field and the displayed filename.
+            $('#_ar_model_path').val('');
+            $('.selected_ar_model_path').text('').hide();
+
+            // Hide the remove button.
+            $('.remove_ar_model_path_button').hide();
+
+            // Send an AJAX request to remove the AR model path from post meta.
+            $.ajax({
+                url: ajaxurl,
+                type: 'POST',
+                data: {
+                    action: 'remove_ar_model_path',
+                    post_id: <?php echo $post->ID; ?>
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
         });
-    </script>
-    <?php
+    });
+</script>
+
+<?php
 }
+
 
 add_action( 'wp_ajax_save_ar_model_path', 'save_ar_model_path' );
 function save_ar_model_path() {
@@ -143,3 +182,15 @@ function save_ar_product_option( $post_id ) {
 }
 
 add_action( 'woocommerce_process_product_meta', 'save_ar_product_option' );
+
+function remove_ar_model_path() {
+    // Get the post ID from the AJAX request.
+    $post_id = $_POST['post_id'];
+    // Remove the AR model path from post meta.
+delete_post_meta( $post_id, '_ar_model_path' );
+
+wp_die();   }
+    
+add_action( 'wp_ajax_remove_ar_model_path', 'remove_ar_model_path' );
+
+?>
