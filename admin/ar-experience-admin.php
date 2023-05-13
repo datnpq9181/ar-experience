@@ -1,5 +1,5 @@
 <?php
-include plugin_dir_path(__FILE__) . 'ar-model-viewer-for-woocommerce-admin-public.php';
+include plugin_dir_path(__FILE__) . 'ar-experience-admin-public.php';
 
 function ar_product_meta_box_callback( $post ) {
     // Enqueue the WordPress media uploader scripts.

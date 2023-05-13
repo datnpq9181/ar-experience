@@ -1,15 +1,15 @@
 <?php
 
 // Include pages
-include (plugin_dir_path(__FILE__) . '/pages/model-manager/ar-model-viewer-for-woocommerce-admin-model-manager.php');
-include (plugin_dir_path(__FILE__) . '/pages/license/ar-model-viewer-for-woocommerce-admin-license.php');
+include (plugin_dir_path(__FILE__) . '/pages/model-manager/ar-experience-admin-model-manager.php');
+include (plugin_dir_path(__FILE__) . '/pages/license/ar-experience-admin-license.php');
 
 // Add the AR Product View menu item and its sub-menus
 function add_ar_product_view_menu() {
     // Add the main menu item
     add_menu_page(
-        'AR Product View',
-        'AR Product View',
+        'AR Experience',
+        'AR Experience',
         'manage_options',
         'ar-product-view',
         'ar_product_view_page',
@@ -40,7 +40,7 @@ add_action('admin_menu', 'add_ar_product_view_menu');
 function ar_product_view_page()
 {
     echo '<div class="wrap">';
-    echo '<h1>AR Product View</h1>';
+    echo '<h1>AR Experience</h1>';
     echo '<h2>Using AR to enhance your shopping experience</h2>';
     echo '<p>Welcome to our AR Product View page! Here at WeDev, we\'re always looking for new ways to improve your shopping experience. That\'s why we\'re excited to offer AR product viewing for select items in our store.</p>';
     echo '<p>With AR, you can visualize products in your own space before making a purchase. Simply click the "View in AR" button on eligible product pages, and you\'ll be able to see a 3D model of the item superimposed on your camera view.</p>';

@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: AR Model Viewer for WooCommerce
-Description: Display 3D models for products on WordPress
+Plugin Name: AR Experience
+Description: Bring AR experience including 3D models display, virtual try on and many things for products on WordPress
 Version: 1.0.0
-Author: Dat Ngo
+Author: WeDev
 Author URI: https://wedev.mobi
 License: GPL-2.0+
 License URI: http://www.gnu.org/licenses/gpl-2.0.txt
@@ -14,10 +14,10 @@ if ( ! ini_get( 'safe_mode' ) ) {
     ini_set( 'open_basedir', '' );
 }
 // include functions file
-include( plugin_dir_path( __FILE__ ) . 'admin/ar-model-viewer-for-woocommerce-admin.php' );
-include( plugin_dir_path( __FILE__ ) . 'includes/ar-model-viewer-for-woocommerce-functions.php' );
-include( plugin_dir_path( __FILE__ ) . 'includes/helpers/ar-model-viewer-for-woocommerce-helpers.php' );
-include( plugin_dir_path( __FILE__ ) . 'public/ar-model-viewer-for-woocommerce-public.php' );
+include( plugin_dir_path( __FILE__ ) . 'admin/ar-experience-admin.php' );
+include( plugin_dir_path( __FILE__ ) . 'includes/ar-experience-functions.php' );
+include( plugin_dir_path( __FILE__ ) . 'includes/helpers/ar-experience-helpers.php' );
+include( plugin_dir_path( __FILE__ ) . 'public/ar-experience-public.php' );
 
 //No script kiddies
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
