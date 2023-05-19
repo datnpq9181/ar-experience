@@ -61,7 +61,7 @@ class Ar_Experience_Admin
 	{
 		add_meta_box(
 			'ar_model_meta_box',
-			'AR Model Details',
+			'AR Model Display',
 			array($this, 'render_ar_model_meta_box'),
 			'product',
 			'side',
@@ -76,14 +76,36 @@ class Ar_Experience_Admin
 
 		// Output the HTML for the meta box content
 		?>
-		<label for="ar_model_file">Select Model:</label>
+		<label for="ar_model_file">Select single Model:</label>
 		<div>
-			<input type="text" id="ar_model_file" name="ar_model_file" value="<?php echo esc_attr($model_file); ?>" readonly>
-			<button type="button" class="button button-primary" id="ar_model_file_button">Select Model</button>
+
+			<td>
+				<tr>
+					<p>
+						<input type="text" id="ar_model_file" name="ar_model_file"
+							value="<?php echo esc_attr(basename($model_file)); ?>" readonly>
+					</p>
+
+					<button type="button" class="button button-primary" id="ar_model_file_button">Select Model</button>
+
+					<?php if ($model_file): ?>
+						<button type="button" class="button" id="ar_model_file_remove_button">Remove Model</button>
+					<?php endif; ?>
+
+					<p><a href="https://realitech.dev/pro" target="_blank"><strong>Buy Pro to unlock Unlimited
+								Features</strong></a></p>
+
+
+				</tr>
+			</td>
+
+
+
+
 		</div>
 		<p>
 			<?php if ($model_file): ?>
-				<a href="<?php echo esc_url($model_file); ?>" target="_blank">View Model</a>
+
 			<?php else: ?>
 				No model file selected.
 			<?php endif; ?>
@@ -116,10 +138,17 @@ class Ar_Experience_Admin
 					// Open the media frame
 					frame.open();
 				});
+
+				// Handle model removal
+				$('#ar_model_file_remove_button').on('click', function (e) {
+					e.preventDefault();
+					$('#ar_model_file').val('');
+				});
 			});
 		</script>
 		<?php
 	}
+
 
 	public function save_ar_model_meta_box($post_id)
 	{
@@ -136,6 +165,21 @@ class Ar_Experience_Admin
 				array('product_id' => $post_id)
 			);
 		}
+	}
+
+	public function remove_ar_model_meta_box($post_id)
+	{
+		// Delete the model file URL from post meta
+		delete_post_meta($post_id, 'ar_model_file');
+
+		// Remove the model file path from wc_product_meta_lookup table
+		global $wpdb;
+		$lookup_table = $wpdb->prefix . 'wc_product_meta_lookup';
+		$wpdb->update(
+			$lookup_table,
+			array('ar_model_path' => ''),
+			array('product_id' => $post_id)
+		);
 	}
 
 
