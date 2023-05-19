@@ -144,6 +144,24 @@ class Ar_Experience_Admin
 					e.preventDefault();
 					$('#ar_model_file').val('');
 				});
+
+				// Update ar_model_path in the database when the post is saved
+				$('#post').submit(function () {
+					var arModelPath = $('#ar_model_file').val();
+
+					$.ajax({
+						url: ajaxurl,
+						type: 'POST',
+						data: {
+							action: 'update_ar_model_path',
+							post_id: $('#post_ID').val(),  // Assuming you have a hidden input with the post ID
+							ar_model_path: arModelPath
+						},
+						success: function (response) {
+							console.log(response);
+						}
+					});
+				});
 			});
 		</script>
 		<?php
@@ -178,7 +196,9 @@ class Ar_Experience_Admin
 		$wpdb->update(
 			$lookup_table,
 			array('ar_model_path' => ''),
-			array('product_id' => $post_id)
+			array('product_id' => $post_id),
+			array('%s'),
+			array('%d')
 		);
 	}
 
