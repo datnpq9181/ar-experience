@@ -1,67 +1,153 @@
-/**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
- */
+body {overflow: hidden;}
+input {position: absolute; display: none}
 
- #controls {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      max-width: unset;
-      transform: unset;
-      pointer-events: auto;
-      z-index: 100;
+
+#controls {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    max-width: unset;
+    transform: unset;
+    pointer-events: auto;
+    z-index: 100;
   }
-  
-  .dot {
-      display: none;
+
+  .dot{
+    display: none;
   }
-  
-  .dim {
-      background: #fff;
-      border-radius: 4px;
-      border: none;
-      box-sizing: border-box;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-      color: rgb(0, 0, 0);
-      display: block;
-      font-family: Futura, Helvetica Neue, sans-serif;
-      font-size: 1em;
-      font-weight: 700;
-      max-width: 128px;
-      overflow-wrap: break-word;
-      padding: 0.5em 1em;
-      position: absolute;
-      width: max-content;
-      height: max-content;
-      transform: translate3d(-50%, -50%, 0);
-      pointer-events: none;
-      --min-hotspot-opacity: 0;
+
+  .dim{
+    background: #fff;
+    border-radius: 4px;
+    border: none;
+    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    color: rgb(0, 0, 0);
+    display: block;
+    font-family: Futura, Helvetica Neue, sans-serif;
+    font-size: 1em;
+    font-weight: 700;
+    max-width: 128px;
+    overflow-wrap: break-word;
+    padding: 0.5em 1em;
+    position: absolute;
+    width: max-content;
+    height: max-content;
+    transform: translate3d(-50%, -50%, 0);
+    pointer-events: none;
+    --min-hotspot-opacity: 0;
   }
-  
+
   @media only screen and (max-width: 800px) {
-      .dim {
-          font-size: 3vw;
-      }
+    .dim{
+      font-size: 3vw;
+    }
   }
-  
-  .dimensionLineContainer {
-      pointer-events: none;
-      display: block;
+
+  .dimensionLineContainer{
+    pointer-events: none;
+    display: block;
   }
-  
-  .dimensionLine {
-      stroke: #e32469;
-      stroke-width: 2;
-      stroke-dasharray: 2;
+
+  .dimensionLine{
+    stroke: #FF974F;
+    stroke-width: 2;
+    stroke-dasharray: 2;
   }
-  
-  .hide {
-      display: none;
+
+  .hide{
+    display: none;
   }
-  
   /* This keeps child nodes hidden while the element loads */
   :not(:defined) > * {
-      display: none;
+    display: none;
   }
-  
+  /* mybutton CSS */
+  #myButton {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  transform: translate(-60%, -60%);
+  background-color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: right;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#myButton img {
+  width: 30px;
+  height: 30px;
+}
+button[slot="ar-button"] {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 50px;
+  background-color: #FF974F;
+  border-radius: 25px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
+.ar-button {
+  background-color: #FF974F;
+  color: white;
+  border-radius: 50px;
+  border: none;
+  padding: 10px 30px;
+  font-size: 16px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  z-index: 1;
+  /* width: 200px; */
+  transform: translateX(-50%) translateY(-50%);
+}
+.popup {
+  display: none;
+  background-color: white;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  z-index: 2;
+}
+
+.close-button {
+  background-color: #ccc;
+  color: white;
+  border-radius: 50%;
+  border: none;
+  padding: 5px 9px;
+  font-size: 14px;
+  cursor: pointer;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+  button[slot="ar-button"] {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 50px;
+  background-color: #FF974F;
+  border-radius: 25px;
+  border: none;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}

@@ -101,6 +101,8 @@ class Ar_Experience_Public
 
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/ar-experience-public.js', array('jquery'), $this->version, false);
 		wp_enqueue_script('model-dimension', plugin_dir_url(__FILE__) . 'js/lib/model-dimension.js', array(), '1.0', true);
+		wp_enqueue_script('model-viewer-addon', plugin_dir_url(__FILE__) . 'js/lib/model-viewer-addon.js', array(), '1.0', true);
+		wp_enqueue_script('model-viewer-loading', plugin_dir_url(__FILE__) . 'js/lib/model-viewer-loading.js', array(), '1.0', true);
 	}
 
 }

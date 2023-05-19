@@ -125,7 +125,7 @@ class Ar_Experience_Admin
 						},
 						multiple: false,  // Set to true if you want to allow multiple file selection
 						library: {
-							type: ['model/gltf-binary', 'application/octet-stream']  // Restrict to .glb and .usdz file formats
+							type: ['model/gltf-binary', 'application/octet-stream', 'model/vnd.usdz+zip', 'application/octet-stream']  // Restrict to .glb and .usdz file formats
 						}
 					});
 

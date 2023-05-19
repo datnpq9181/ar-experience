@@ -29,7 +29,8 @@ function display_ar_model_viewer()
   if ($model_src) {
     echo '<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@latest"></script>
             <div class="ar-model-viewer-container">
-                <model-viewer id="superAR" alt="" src="' . esc_url($model_src) . '" ar="webxr scene-viewer quick-look fallback" poster="" shadow-intensity="1" camera-controls="" touch-action="pan-y" data-js-focus-visible="" ar-status="not-presenting" loading="auto" reveal="auto" style="width:100%; height:400px; position:relative; top:0; margin:auto;">
+            <button class="ar-button">View in your space</button>
+                <model-viewer id="superAR" alt="" environment-image="neutral" src="' . esc_url($model_src) . '" ar="webxr scene-viewer quick-look fallback" poster="" shadow-intensity="1.5" camera-controls="" touch-action="pan-y" data-js-focus-visible="" ar-status="not-presenting" loading="auto" reveal="auto" style="width:100%; height:600px; position:relative; top:0; margin:auto;">
                 <button slot="hotspot-dot+X-Y+Z" class="dot" data-position="1 -1 1" data-normal="1 0 0"></button>
                 <button slot="hotspot-dim+X-Y" class="dim" data-position="1 -1 0" data-normal="1 0 0"></button>
                 <button slot="hotspot-dot+X-Y-Z" class="dot" data-position="1 -1 -1" data-normal="1 0 0"></button>
@@ -48,6 +49,18 @@ function display_ar_model_viewer()
                     <line class="dimensionLine"></line>
                     <line class="dimensionLine"></line>
                 </svg>
+                <button id="myButton"><img src=' . plugins_url( "/img/ruler.png", __FILE__ ) . '></button>
+                <div class="progress-bar hide" slot="progress-bar">
+                  <div class="update-bar"></div>
+                </div>
+                <div id="ar-prompt">
+                  <img src=' . plugins_url( "/img/ar_icon.png", __FILE__ ) . '>
+                </div>
+                <div class="popup" id="popup">
+                <button class="close-button" onclick="closePopup()">×</button>
+                <p>Scan this QR code on your mobile device to view in your space:</p>
+                <img id="qr-code-img" alt="QR Code">
+                </div>
                 </model-viewer>
             </div>';
   }
