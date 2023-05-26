@@ -2,7 +2,7 @@ const modelViewer = document.querySelector("#superAR");
 
 function setVisibility(element) {
     
-  if (element === myButton || element.slot === "ar-button") {
+  if (element === rulerButton || element.slot === "ar-button") {
     return; // don't modify the button's visibility
   }
   if (element.classList.contains("hide")) {
@@ -12,7 +12,7 @@ function setVisibility(element) {
   }
 } 
 
-myButton.addEventListener("click", function () {
+rulerButton.addEventListener("click", function () {
     setVisibility(modelViewer.querySelector("#dimLines"));
     modelViewer.querySelectorAll("button").forEach((hotspot) => {
       setVisibility(hotspot);

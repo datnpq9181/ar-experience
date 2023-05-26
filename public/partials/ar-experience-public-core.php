@@ -49,13 +49,7 @@ function display_ar_model_viewer()
                     <line class="dimensionLine"></line>
                     <line class="dimensionLine"></line>
                 </svg>
-                <button id="myButton"><img src=' . plugins_url( "/img/ruler.png", __FILE__ ) . '></button>
-                <div class="progress-bar hide" slot="progress-bar">
-                  <div class="update-bar"></div>
-                </div>
-                <div id="ar-prompt">
-                  <img src=' . plugins_url( "/img/ar_icon.png", __FILE__ ) . '>
-                </div>
+                <button id="rulerButton"><img src=' . plugins_url( "/img/ruler.svg", __FILE__ ) . '></button>
                 <div class="popup" id="popup">
                 <button class="close-button" onclick="closePopup()">×</button>
                 <p>Scan this QR code on your mobile device to view in your space:</p>
