@@ -20,7 +20,6 @@
       }
     });
 
-    // Đảm bảo hàm closePopup có thể truy cập từ HTML
     window.closePopup = function() {
       popup.classList.remove("fade-in");
       popup.classList.add("fade-out");
@@ -30,7 +29,6 @@
       }, 300);
     };
 
-    // Thêm sự kiện đóng popup cho nút đóng
     const closeButton = document.querySelector(".close-button");
     if (closeButton) {
       closeButton.addEventListener("click", closePopup);

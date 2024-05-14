@@ -5,7 +5,7 @@ function is_ar_model_path_exists($product_id) {
   $table_name = $wpdb->prefix . 'wc_product_meta_lookup';
   $ar_model_path = $wpdb->get_var($wpdb->prepare("SELECT ar_model_path FROM $table_name WHERE product_id = %d", $product_id));
 
-  return !empty($ar_model_path);
+  return $ar_model_path !== null;
 }
 
 function hide_product_gallery_if_model_exists() {
@@ -22,6 +22,9 @@ function display_ar_model_viewer() {
   $table_name = $wpdb->prefix . 'wc_product_meta_lookup';
   $product_id = get_the_ID();
   $model_src = $wpdb->get_var($wpdb->prepare("SELECT ar_model_path FROM $table_name WHERE product_id = %d", $product_id));
+  $options = get_option('ar_experience_options');
+  $view_in_space = isset($options['view_in_space']) ? $options['view_in_space'] : 0;
+  $ruler_button = isset($options['ruler_button']) ? $options['ruler_button'] : 0;
 
   if ($model_src) {
     echo '<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@latest"></script>
@@ -44,10 +47,14 @@ function display_ar_model_viewer() {
                     <line class="dimensionLine"></line>
                     <line class="dimensionLine"></line>
                     <line class="dimensionLine"></line>
-                </svg>
-                <button class="ar-button">View in your space</button>
-                <button id="rulerButton"><img src="' . plugins_url("/img/ruler.svg", __FILE__) . '"></button>
-                <div class="popup" id="popup">
+                </svg>';
+    if ($view_in_space) {
+      echo '<button class="ar-button">View in your space</button>';
+    }
+    if ($ruler_button) {
+      echo '<button id="rulerButton"><img src="' . plugins_url("/img/ruler.svg", __FILE__) . '"></button>';
+    }
+    echo '<div class="popup" id="popup">
                 <button class="close-button" onclick="closePopup()">×</button>
                 <p>Scan this QR code on your mobile device to view in your space:</p>
                 <center><img id="qr-code-img" alt="QR Code"></center>
