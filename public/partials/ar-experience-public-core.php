@@ -5,7 +5,7 @@ function is_ar_model_path_exists($product_id) {
   $table_name = $wpdb->prefix . 'wc_product_meta_lookup';
   $ar_model_path = $wpdb->get_var($wpdb->prepare("SELECT ar_model_path FROM $table_name WHERE product_id = %d", $product_id));
 
-  return $ar_model_path !== null;
+  return !empty($ar_model_path);
 }
 
 function hide_product_gallery_if_model_exists() {
@@ -26,8 +26,7 @@ function display_ar_model_viewer() {
   if ($model_src) {
     echo '<script type="module" src="https://cdn.jsdelivr.net/npm/@google/model-viewer@latest"></script>
           <div class="ar-model-viewer-container">
-            <div class="loader" id="arLoader"></div>
-            <model-viewer id="superAR" alt="" environment-image="neutral" src="' . esc_url($model_src) . '" ar="webxr scene-viewer quick-look fallback" poster="" shadow-intensity="1.5" camera-controls="" touch-action="pan-y" data-js-focus-visible="" ar-status="not-presenting" loading="auto" reveal="auto" style="width:100%; height:600px; position:relative; top:0; margin:auto;" onload="document.getElementById(\'arLoader\').style.display=\'none\';">
+            <model-viewer id="superAR" alt="" environment-image="neutral" src="' . esc_url($model_src) . '" ar="webxr scene-viewer quick-look fallback" poster="" shadow-intensity="1.5" camera-controls="" touch-action="pan-y" data-js-focus-visible="" ar-status="not-presenting" loading="auto" reveal="auto" style="width:100%; height:600px; position:relative; top:0; margin:auto;">
                 <button slot="hotspot-dot+X-Y+Z" class="dot" data-position="1 -1 1" data-normal="1 0 0"></button>
                 <button slot="hotspot-dim+X-Y" class="dim" data-position="1 -1 0" data-normal="1 0 0"></button>
                 <button slot="hotspot-dot+X-Y-Z" class="dot" data-position="1 -1 -1" data-normal="1 0 0"></button>

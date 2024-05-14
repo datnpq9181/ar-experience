@@ -23,8 +23,8 @@ const arButton = document.querySelector(".ar-button"); // Thêm dòng này để
 const rulerButton = document.querySelector("#rulerButton"); // Thêm dòng này để chắc chắn rằng rulerButton được tham chiếu chính xác
 
 function setVisibility(element) {
-  if (element === rulerButton || element === arButton || element.slot === "ar-button") {
-    return; // Không thay đổi tầm nhìn của rulerButton hoặc arButton
+  if (element === rulerButton || element === arButton || element.classList.contains("popup") || element.classList.contains("close-button")) {
+    return; // Không thay đổi tầm nhìn của rulerButton, arButton, popup, hoặc closeButton
   }
   element.classList.toggle("hide");
 } 
