@@ -29,4 +29,31 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+	jQuery(document).ready(function($) {
+		$('#activate_license').on('click', function(e) {
+			e.preventDefault();
+			var licenseKey = $('#license_key').val();
+			
+			$.ajax({
+				url: ajaxurl,
+				type: 'POST',
+				data: {
+					action: 'validate_license_ajax',
+					license_key: licenseKey,
+				},
+				success: function(response) {
+					if (response.success) {
+						$('#license_message').html('<div class="updated"><p>' + response.data.message + '</p></div>');
+					} else {
+						$('#license_message').html('<div class="error"><p>' + response.data.message + '</p></div>');
+					}
+				},
+				error: function(response) {
+					$('#license_message').html('<div class="error"><p>There was an error during the request.</p></div>');
+				}
+			});
+		});
+	});
+	
+
 })( jQuery );
