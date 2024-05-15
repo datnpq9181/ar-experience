@@ -2,3 +2,103 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+ .wrap h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.wrap form {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.wrap form h2 {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.wrap form .form-table {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.wrap form .form-table th {
+    text-align: left;
+    padding: 10px 0;
+    width: auto;
+}
+
+.wrap form .form-table td {
+    padding: 10px 0;
+    vertical-align: middle;
+}
+
+.wrap form .form-table td input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.wrap form .button-primary {
+    background: #0073aa;
+    border-color: #0073aa;
+    box-shadow: none;
+    text-shadow: none;
+}
+
+.wrap form .button-primary:hover {
+    background: #006799;
+    border-color: #006799;
+}
+
+.wrap form .rating {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+.wrap form .rating a {
+    color: #ffb900;
+    text-decoration: none;
+}
+
+.wrap form .rating a:hover {
+    color: #ff9900;
+}
+
+.wrap form .license-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+}
+
+.wrap form .license-section h2 {
+    margin-top: 0;
+}
+
+.wrap form .license-section input[type="text"] {
+    width: 300px;
+    margin-right: 10px;
+}
+
+.wrap form .license-section button {
+    margin-left: 10px;
+}
+
+.wrap form .license-section p {
+    margin: 5px 0;
+}
+
+.wrap form .form-section {
+    margin-top: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+}
