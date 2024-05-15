@@ -50,6 +50,8 @@ class Ar_Experience_Admin {
 
     public function display_configuration_page() {
         $options = get_option('ar_experience_options');
+        $license_status = isset($options['license_status']) ? $options['license_status'] : '';
+        $is_license_valid = ($license_status === 'valid');
         ?>
         <div class="wrap">
             <h1><?php echo esc_html__('Configuration', 'ar-experience'); ?></h1>
@@ -58,16 +60,16 @@ class Ar_Experience_Admin {
                 settings_errors();
                 settings_fields('ar_experience_options_group');
                 ?>
-                
+    
                 <div class="license-section">
                     <h2><?php echo esc_html__('Activate License', 'ar-experience'); ?></h2>
                     <?php do_settings_sections('ar_experience_license'); ?>
                     <p>
-                        <button type="submit" class="button button-primary"><?php echo esc_html__('Deactivate', 'ar-experience'); ?></button>
+                        <button type="submit" class="button button-primary"><?php echo esc_html__('Activate', 'ar-experience'); ?></button>
                         <a href="#" target="_blank"><?php echo esc_html__('How to find your purchase code?', 'ar-experience'); ?></a>
                     </p>
                 </div>
-                
+    
                 <div class="form-section">
                     <h2><?php echo esc_html__('Enable/Disable', 'ar-experience'); ?></h2>
                     <table class="form-table">
@@ -76,7 +78,7 @@ class Ar_Experience_Admin {
                                 <label for="view_in_space"><?php echo esc_html__('Enable WooCommerce Product View in AR', 'ar-experience'); ?></label>
                             </th>
                             <td>
-                                <input id="view_in_space" name="ar_experience_options[view_in_space]" type="checkbox" value="1" <?php checked(1, $options['view_in_space'], true); ?> />
+                                <input id="view_in_space" name="ar_experience_options[view_in_space]" type="checkbox" value="1" <?php checked(1, isset($options['view_in_space']) ? $options['view_in_space'] : 0, true); ?> <?php echo $is_license_valid ? '' : 'disabled'; ?> />
                             </td>
                         </tr>
                         <tr>
@@ -84,14 +86,14 @@ class Ar_Experience_Admin {
                                 <label for="ruler_button"><?php echo esc_html__('Enable Ruler Button', 'ar-experience'); ?></label>
                             </th>
                             <td>
-                                <input id="ruler_button" name="ar_experience_options[ruler_button]" type="checkbox" value="1" <?php checked(1, $options['ruler_button'], true); ?> />
+                                <input id="ruler_button" name="ar_experience_options[ruler_button]" type="checkbox" value="1" <?php checked(1, isset($options['ruler_button']) ? $options['ruler_button'] : 0, true); ?> <?php echo $is_license_valid ? '' : 'disabled'; ?> />
                             </td>
                         </tr>
                     </table>
                 </div>
-                
-                <button type="submit" class="button button-primary"><?php echo esc_html__('Save Changes', 'ar-experience'); ?></button>
-                
+    
+                <?php submit_button(esc_html__('Save Changes', 'ar-experience')); ?>
+    
                 <div class="rating">
                     <?php echo esc_html__('If you really like our plugin, please leave us a ', 'ar-experience'); ?>
                     <a href="https://wordpress.org/support/plugin/ar-experience/reviews/#new-post" target="_blank">
@@ -105,8 +107,7 @@ class Ar_Experience_Admin {
     }
     
     
-
-
+    
     public function settings_init() {
         register_setting(
             'ar_experience_options_group',
@@ -189,31 +190,27 @@ class Ar_Experience_Admin {
         $newinput['view_in_space'] = isset($input['view_in_space']) ? 1 : 0;
         $newinput['ruler_button'] = isset($input['ruler_button']) ? 1 : 0;
     
-        if (!preg_match('/^[A-Z0-9-]{19}$/i', $newinput['license_key'])) {
-            add_settings_error('license_key', 'invalid-license', __('Invalid license key, please contact us or buy a new one at https://wedev.mobi', 'ar-experience'), 'error');
-            return $input;
+        $site_url = urlencode(parse_url(get_site_url(), PHP_URL_HOST));
+        $activation_url = "http://customer.local/wp-json/lmfwc/v2/licenses/activate/{$newinput['license_key']}?label={$site_url}";
+    
+        $response = wp_remote_get($activation_url, array(
+            'headers' => array(
+                'Authorization' => 'Basic ' . base64_encode('ck_0be3d796c18bdde5ce0f6795a69e2107174a0e30:cs_23d94800fa1b0627f6d6b30039ef71d98225a3bb')
+            )
+        ));
+    
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
+            $newinput['license_status'] = 'valid';
+            add_settings_error('license_key', 'license-activated', __('License activated successfully!', 'ar-experience'), 'updated');
+            update_option('ar_experience_license_activated', true);
         } else {
-            $site_url = urlencode(parse_url(get_site_url(), PHP_URL_HOST));
-            $activation_url = "http://customer.local/wp-json/lmfwc/v2/licenses/activate/{$newinput['license_key']}?label={$site_url}";
-    
-            $response = wp_remote_get($activation_url, array(
-                'headers' => array(
-                    'Authorization' => 'Basic ' . base64_encode('ck_0be3d796c18bdde5ce0f6795a69e2107174a0e30:cs_23d94800fa1b0627f6d6b30039ef71d98225a3bb')
-                )
-            ));
-    
-            if (is_wp_error($response) || wp_remote_retrieve_response_code($response) != 200) {
-                add_settings_error('license_key', 'api-error', __('Failed to activate license: ', 'ar-experience') . wp_remote_retrieve_response_message($response), 'error');
-                $newinput['license_key'] = '';
-            } else {
-                $newinput['license_status'] = 'valid';
-                add_settings_error('license_key', 'license-activated', __('License activated successfully!', 'ar-experience'), 'updated');
-                update_option('ar_experience_license_activated', true);
-            }
+            $newinput['license_key'] = '';
         }
     
         return $newinput;
     }
+    
+    
     
     public function validate_license() {
         $options = get_option('ar_experience_options');
