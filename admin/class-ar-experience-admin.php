@@ -201,14 +201,24 @@ class Ar_Experience_Admin {
     
         if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
             $newinput['license_status'] = 'valid';
-            add_settings_error('license_key', 'license-activated', __('License activated successfully!', 'ar-experience'), 'updated');
-            update_option('ar_experience_license_activated', true);
+    
+            // Check if the license activation message has been displayed before
+            $license_activated_once = get_option('ar_experience_license_activated_once', false);
+    
+            if (!$license_activated_once) {
+                // Display the activation message only once
+                add_settings_error('license_key', 'license-activated', __('License activated successfully!', 'ar-experience'), 'updated');
+    
+                // Set the flag to true to indicate that the message has been displayed
+                update_option('ar_experience_license_activated_once', true);
+            }
         } else {
             $newinput['license_key'] = '';
         }
     
         return $newinput;
     }
+    
     
     
     
