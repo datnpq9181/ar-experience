@@ -1,9 +1,16 @@
 const modelViewer = document.querySelector("#superAR");
 const rulerButton = document.querySelector("#rulerButton");
 
+document.querySelectorAll("#superAR button").forEach(element => {
+  if (!element.classList.contains("ar-button") && !element.classList.contains("close-button")) {
+    element.classList.add("hide");
+  }
+});
+document.querySelector("#dimLines").classList.add("hide");
+
 function setVisibility(element) {
   if (element === rulerButton || element.classList.contains("ar-button") || element.classList.contains("close-button")) {
-    return; // Không thay đổi tầm nhìn của rulerButton, View in your space, và closeButton
+    return; 
   }
   element.classList.toggle("hide");
 }
