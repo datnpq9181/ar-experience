@@ -60,16 +60,19 @@ class Ar_Experience_Admin {
                 settings_errors();
                 settings_fields('ar_experience_options_group');
                 ?>
-    
                 <div class="license-section">
-                    <h2><?php echo esc_html__('Activate License', 'ar-experience'); ?></h2>
-                    <?php do_settings_sections('ar_experience_license'); ?>
-                    <p>
-                        <button type="submit" class="button button-primary"><?php echo esc_html__('Activate', 'ar-experience'); ?></button>
-                        <a href="#" target="_blank"><?php echo esc_html__('How to find your purchase code?', 'ar-experience'); ?></a>
-                    </p>
+                    <div class="license-key-row">
+                        <?php do_settings_sections('ar_experience_license'); ?>
+                        <div class="license-actions">
+                            <?php if ($is_license_valid): ?>
+                                <button type="submit" name="deactivate_license" class="button button-secondary"><?php echo esc_html__('Deactivate', 'ar-experience'); ?></button>
+                            <?php else: ?>
+                                <button type="submit" class="button button-primary"><?php echo esc_html__('Activate', 'ar-experience'); ?></button>
+                            <?php endif; ?>
+                            <a href="#" target="_blank"><?php echo esc_html__('How to find your purchase code?', 'ar-experience'); ?></a>
+                        </div>
+                    </div>
                 </div>
-    
                 <div class="form-section">
                     <h2><?php echo esc_html__('Enable/Disable', 'ar-experience'); ?></h2>
                     <table class="form-table">
@@ -91,9 +94,7 @@ class Ar_Experience_Admin {
                         </tr>
                     </table>
                 </div>
-    
                 <?php submit_button(esc_html__('Save Changes', 'ar-experience')); ?>
-    
                 <div class="rating">
                     <?php echo esc_html__('If you really like our plugin, please leave us a ', 'ar-experience'); ?>
                     <a href="https://wordpress.org/support/plugin/ar-experience/reviews/#new-post" target="_blank">
@@ -105,6 +106,7 @@ class Ar_Experience_Admin {
         </div>
         <?php
     }
+    
     
     
     
@@ -157,7 +159,7 @@ class Ar_Experience_Admin {
     }
     
     public function section_text() {
-        echo '<p>' . esc_html__('Enter your settings below:', 'ar-experience') . '</p>';
+        echo '<p></p>';
     }
     
     public function license_key_input() {
@@ -165,8 +167,9 @@ class Ar_Experience_Admin {
         $licenseKey = isset($options['license_key']) ? esc_attr($options['license_key']) : '';
         $license_status = isset($options['license_status']) ? $options['license_status'] : '';
         $tickIcon = $license_status === 'valid' ? '<span style="color: green; margin-left: 5px;">&#10004;</span>' : '';
-        
-        echo "<input id='license_key' name='ar_experience_options[license_key]' size='40' type='text' value='{$licenseKey}'/> $tickIcon";
+        $disabled = $license_status === 'valid' ? 'disabled' : '';
+    
+        echo "<input id='license_key' name='ar_experience_options[license_key]' size='40' type='text' value='{$licenseKey}' $disabled/> $tickIcon";
     }
     
     public function view_in_space_input() {
@@ -186,39 +189,66 @@ class Ar_Experience_Admin {
     public function options_validate($input) {
         $newinput = array();
     
-        $newinput['license_key'] = sanitize_text_field(isset($input['license_key']) ? $input['license_key'] : '');
+        if (isset($_POST['deactivate_license'])) {
+            $newinput['license_key'] = '';
+            $newinput['license_status'] = 'invalid';
+            add_settings_error('license_key', 'license-deactivated', __('License deactivated successfully!', 'ar-experience'), 'updated');
+        } else {
+            $options = get_option('ar_experience_options');
+            
+            // Chỉ xử lý kích hoạt nếu license chưa kích hoạt
+            if (isset($options['license_status']) && $options['license_status'] === 'valid') {
+                $newinput['license_key'] = $options['license_key'];
+                $newinput['license_status'] = 'valid';
+            } else {
+                $newinput['license_key'] = sanitize_text_field(isset($input['license_key']) ? $input['license_key'] : '');
+    
+                if (!empty($newinput['license_key'])) {
+                    $site_url = urlencode(parse_url(get_site_url(), PHP_URL_HOST));
+                    $activation_url = "http://customer.local/wp-json/lmfwc/v2/licenses/activate/{$newinput['license_key']}?label={$site_url}";
+    
+                    $response = wp_remote_get($activation_url, array(
+                        'headers' => array(
+                            'Authorization' => 'Basic ' . base64_encode('ck_0be3d796c18bdde5ce0f6795a69e2107174a0e30:cs_23d94800fa1b0627f6d6b30039ef71d98225a3bb')
+                        )
+                    ));
+    
+                    if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
+                        $body = json_decode(wp_remote_retrieve_body($response), true);
+                        if (isset($body['data']['activationData']) && $body['data']['activationData'] != NULL) {
+                            $newinput['license_status'] = 'valid';
+    
+                            // Hiển thị thông báo kích hoạt thành công một lần
+                            $license_activated_once = get_option('ar_experience_license_activated_once', false);
+    
+                            if (!$license_activated_once) {
+                                add_settings_error('license_key', 'license-activated', __('License activated successfully!', 'ar-experience'), 'updated');
+                                update_option('ar_experience_license_activated_once', true);
+                            }
+                        } else {
+                            $newinput['license_key'] = '';
+                            $newinput['license_status'] = 'invalid';
+                            update_option('ar_experience_license_activated_once', false); // Cập nhật cờ trạng thái
+                            add_settings_error('license_key', 'license-activation-failed', __('Failed to validate license: Invalid response from server', 'ar-experience'), 'error');
+                        }
+                    } else {
+                        $newinput['license_key'] = '';
+                        $newinput['license_status'] = 'invalid';
+                        update_option('ar_experience_license_activated_once', false); // Cập nhật cờ trạng thái
+                        add_settings_error('license_key', 'license-activation-failed', __('Failed to validate license: ', 'ar-experience') . wp_remote_retrieve_response_message($response), 'error');
+                    }
+                } else {
+                    $newinput['license_status'] = 'invalid';
+                }
+            }
+        }
+    
+        // Sao chép các tùy chọn khác
         $newinput['view_in_space'] = isset($input['view_in_space']) ? 1 : 0;
         $newinput['ruler_button'] = isset($input['ruler_button']) ? 1 : 0;
     
-        $site_url = urlencode(parse_url(get_site_url(), PHP_URL_HOST));
-        $activation_url = "http://customer.local/wp-json/lmfwc/v2/licenses/activate/{$newinput['license_key']}?label={$site_url}";
-    
-        $response = wp_remote_get($activation_url, array(
-            'headers' => array(
-                'Authorization' => 'Basic ' . base64_encode('ck_0be3d796c18bdde5ce0f6795a69e2107174a0e30:cs_23d94800fa1b0627f6d6b30039ef71d98225a3bb')
-            )
-        ));
-    
-        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) == 200) {
-            $newinput['license_status'] = 'valid';
-    
-            // Check if the license activation message has been displayed before
-            $license_activated_once = get_option('ar_experience_license_activated_once', false);
-    
-            if (!$license_activated_once) {
-                // Display the activation message only once
-                add_settings_error('license_key', 'license-activated', __('License activated successfully!', 'ar-experience'), 'updated');
-    
-                // Set the flag to true to indicate that the message has been displayed
-                update_option('ar_experience_license_activated_once', true);
-            }
-        } else {
-            $newinput['license_key'] = '';
-        }
-    
         return $newinput;
     }
-    
     
     
     

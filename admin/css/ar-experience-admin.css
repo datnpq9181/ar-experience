@@ -102,3 +102,26 @@
     border: 1px solid #e5e5e5;
     border-radius: 5px;
 }
+
+/* .license-section .form-table tr:first-child {
+    display: none;
+}
+
+.license-key-row {
+    display: flex;
+    align-items: center;
+}
+
+.license-actions {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.license-actions .button {
+    margin-right: 10px;
+}
+
+.license-actions a {
+    white-space: nowrap;
+} */
